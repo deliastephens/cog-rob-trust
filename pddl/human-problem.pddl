@@ -1,5 +1,5 @@
-(define (problem robot-problem-1)
-  (:domain robot-domain-1)
+(define (problem human-problem-1)
+  (:domain human-domain-1)
 
   (:objects
     sq0-0 sq0-1 sq0-2 - location
@@ -50,7 +50,8 @@
    (clear sq0-2)
    (clear sq1-0)
    ;; (clear sq1-1) There is a pit here!
-   (clear sq1-2) 
+   
+   ;; (clear sq1-2) 
    (clear sq2-0)
    (clear sq2-1)
    (clear sq2-2))

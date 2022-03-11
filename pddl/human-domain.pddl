@@ -1,4 +1,4 @@
-(define (domain robot-domain-1)
+(define (domain human-domain-1)
 
   (:requirements :strips :typing)
 
