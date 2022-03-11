@@ -1,6 +1,6 @@
 from subprocess import Popen, PIPE, STDOUT, TimeoutExpired
-import re
 from IPython.display import display, HTML, clear_output, display_html, Javascript
+from pyperplan import planner
 
 JS="""
 require("notebook/js/outputarea").OutputArea.prototype._should_scroll = function(lines) {
@@ -129,62 +129,48 @@ def prep_browser():
 
 num_divs = 0
 
-class OpticParser():
-    def __init__(self, optic_output):
-        self.optic_output = optic_output
+def run_pyperplan(domain_file, problem_file, search_type='astar', heuristic='hff'):
+  """
+  @param domain_file:    a string to the relative path of the domain pddl file (e.g., pddl/robot-domain.pddl)
+  @param problem_file:   a string to the relative path of the problem file
+  @param search_type:    a string from {'astar', 'wastar', 'gbf', 'bfs', 'ehs', 'ids', 'sat'}
+  @param heuristic       a string from {'hff', 'hadd', 'hmax'} (there may be more; check out the Pyperplan documentation)
 
-    def parse(self):
-        # Parse with a regular expression, capturing the initial time, action, and duration
-        expr = re.compile(r'^(\d+\.\d+):\s*(.*)\[(\d+\.\d+)\]$', re.MULTILINE)
-        matches = expr.findall(self.optic_output)
-        return [m[0] + ': ' + m[1].strip() + ' [' + m[2] + ']' for m in matches]
+  @return solution       a list of actions that solve the problem 
+  """
+  search_alg = planner.SEARCHES[search_type]
+  heuristic =  planner.HEURISTICS[heuristic]
 
-    def solution_found(self):
-        return ';;;; Solution Found' in self.optic_output
+  return planner.search_plan(domain_file, problem_file, search_alg, heuristic)
 
-def run_optic(domain, problem, timeout=None):
-    if timeout:
-        p = Popen(['optic-clp', domain, problem], stdout=PIPE, stderr=STDOUT)
-    else:
-        p = Popen(['optic-clp', '-N', domain, problem], stdout=PIPE, stderr=STDOUT)
-    try:
-        out, _ = p.communicate(timeout=timeout)
-    except TimeoutExpired:
-        p.kill()
-        out, _ = p.communicate()
-    code = p.returncode
-    out = out.decode("utf-8") 
-    return code, out
-
-def run_and_viz_optic(domain_file, problem_file, timeout=None):
-    global num_divs
-    code, out = run_optic(domain_file, problem_file, timeout=timeout)
-    parser = OpticParser(out)
-    success = code == 0 and parser.solution_found()
-    if timeout:
-        display_html("<strong>raw planner output:</strong>", raw=True)
-        for l in out.split("\n"):
-            print(l)
-        print("done")
-        return
+def run_and_viz_pyperplan(domain_file, problem_file, search_type='astar', heuristic='hff'):
+  solution = run_pyperplan(domain_file, problem_file, search_type, heuristic)
+  global num_divs
     
-    if not success:
-        display_html("""<div class="alert alert-error">
-        <strong>Planning failed!</strong>
-        </div>""", raw=True)
-    else:
-        num_divs += 1
-        display_html("""<div class="alert alert-success">
-        <strong>Plan found!</strong>
-        </div>""", raw=True)
-        display_html('<div id="timeline-graph-' + str(num_divs) + '"></div>',
-                     raw=True)
-        lines = parser.parse()
-        plan_string = '\\n'.join(lines)
-        display_html('<script> window.display_timeline("timeline-graph-' + str(num_divs) + '", "' + plan_string + '") </script>',
-                     raw=True)
-    display_html("<strong>raw planner output:</strong>", raw=True)
-    for l in out.split("\n"):
-        print(l)
-    if not success:
-        raise RuntimeError('Planning failed.')
+  if len(solution) == 0:
+      display_html("""<div class="alert alert-error">
+      <strong>Planning failed!</strong>
+      </div>""", raw=True)
+  if solution:
+      num_divs += 1
+      display_html("""<div class="alert alert-success">
+      <strong>Plan found!</strong>
+      </div>""", raw=True)
+      display_html('<div id="timeline-graph-' + str(num_divs) + '"></div>',
+                    raw=True)
+      # Create a plan string with action of 1 for every Operator in the solution
+      plan_string = ''
+      t = 0.0
+      for op in solution:
+        start_time = str(t) +': '
+        action = str(op.name)
+        duration = ' [1.0]\\n'
+        plan_string += start_time + action + duration
+        t += 1
+      display_html('<script> window.display_timeline("timeline-graph-' + str(num_divs) + '", "' + plan_string + '") </script>',
+                    raw=True)
+  display_html("<strong>raw planner output:</strong>", raw=True)
+  for action in solution:
+    print(action)
+  if not solution:
+      raise RuntimeError('Planning failed.')
