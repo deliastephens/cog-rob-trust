@@ -18,9 +18,12 @@ To start a Jupyter Notebook (once everything is installed and you're in the corr
 jupyter notebook
 ```
 
-A window should open up automatically!
+A browser window should open up automatically, and you can get to editing!
 
 ### BinderHub
-Alternatively, you may edit the `.ipynb` file on BinderHub; note that you'll have to copy/paste your changes back into a local repo and push them to Git if you want them to stay up there!
-
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/deliastephens/cog-rob-trust/HEAD)
+
+Alternatively, you may edit the `.ipynb` file on BinderHub; note that you'll have to copy/paste your changes back into a local repo and push them to Git if you want them to stay up there! Note that the visualizations don't appear to be working on BinderHub; this is likely due to security protections prohibiting the execution of arbitrary Javascript code. Everything else should work, though!
+
+## Development
+Collaboratively editing IPython Notebooks can be a pain; it's probably a best to message if you're going to work on something in this or create another `.ipynb` file with your changes that we can then copy/paste. If you're pushing major changes, please make [a branch](https://www.atlassian.com/git/tutorials/using-branches) so you don't accidentally bork (technical term) someone else's code, and we can re-merge by hand if needed.
