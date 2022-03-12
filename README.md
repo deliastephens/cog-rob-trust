@@ -22,3 +22,5 @@ A window should open up automatically!
 
 ### BinderHub
 Alternatively, you may edit the `.ipynb` file on BinderHub; note that you'll have to copy/paste your changes back into a local repo and push them to Git if you want them to stay up there!
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/deliastephens/cog-rob-trust/HEAD)

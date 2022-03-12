@@ -1,3 +1,2 @@
-pyperplan
-subprocess
-IPython
+ipython==8.1.1
+pyperplan==2.1
