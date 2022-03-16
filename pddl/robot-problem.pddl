@@ -48,9 +48,9 @@
    (clear sq0-0)
    (clear sq0-1)
    (clear sq0-2)
-   (clear sq1-0)
-   ;; (clear sq1-1) There is a pit here!
-   (clear sq1-2) 
+   (clear sq1-0) 
+   (clear sq1-1) 
+   ;; (clear sq1-2) 
    (clear sq2-0)
    (clear sq2-1)
    (clear sq2-2))
