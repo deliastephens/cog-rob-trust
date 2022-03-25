@@ -143,15 +143,16 @@ def run_pyperplan(domain_file, problem_file, search_type='astar', heuristic='hff
 
   return planner.search_plan(domain_file, problem_file, search_alg, heuristic)
 
-def run_and_viz_pyperplan(domain_file, problem_file, search_type='astar', heuristic='hff'):
-  solution = run_pyperplan(domain_file, problem_file, search_type, heuristic)
+
+def viz_plan(plan):
   global num_divs
-    
-  if len(solution) == 0:
+
+  if len(plan) == 0:
       display_html("""<div class="alert alert-error">
       <strong>Planning failed!</strong>
       </div>""", raw=True)
-  if solution:
+
+  if plan:
       num_divs += 1
       display_html("""<div class="alert alert-success">
       <strong>Plan found!</strong>
@@ -161,7 +162,7 @@ def run_and_viz_pyperplan(domain_file, problem_file, search_type='astar', heuris
       # Create a plan string with action of 1 for every Operator in the solution
       plan_string = ''
       t = 0.0
-      for op in solution:
+      for op in plan:
         start_time = str(t) +': '
         action = str(op.name)
         duration = ' [1.0]\\n'
@@ -170,7 +171,16 @@ def run_and_viz_pyperplan(domain_file, problem_file, search_type='astar', heuris
       display_html('<script> window.display_timeline("timeline-graph-' + str(num_divs) + '", "' + plan_string + '") </script>',
                     raw=True)
   display_html("<strong>raw planner output:</strong>", raw=True)
-  for action in solution:
-    print(action)
+
+  for action in plan:
+    print(action.name)
+
+
+def run_and_viz_pyperplan(domain_file, problem_file, search_type='astar', heuristic='hff'):
+  solution = run_pyperplan(domain_file, problem_file, search_type, heuristic)
+  global num_divs
+    
+  viz_plan(solution)
+
   if not solution:
       raise RuntimeError('Planning failed.')
