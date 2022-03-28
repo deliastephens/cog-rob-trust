@@ -1,2 +1,2 @@
-ipython==7.32.0
+ipython==8.2.0
 pyperplan==2.1
