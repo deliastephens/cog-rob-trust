@@ -1,3 +1,7 @@
+import IPython
+from nose.tools import assert_equal, ok_
+import numpy as np
+
 from subprocess import Popen, PIPE, STDOUT, TimeoutExpired
 from IPython.display import display, HTML, clear_output, display_html, Javascript
 from pyperplan import planner
@@ -143,6 +147,91 @@ def run_pyperplan(domain_file, problem_file, search_type='astar', heuristic='hff
 
   return planner.search_plan(domain_file, problem_file, search_alg, heuristic)
 
+def test_ok():
+    """ If execution gets to this point, print out a happy message """
+    try:
+        from IPython.display import display_html
+        display_html("""<div class="alert alert-success">
+        <strong>Tests passed!!</strong>
+        </div>""", raw=True)
+    except:
+        print("Tests passed!!")
+
+def check_omega(func):
+    assert_equal(np.allclose(func(np.array([0, 0.3, 0.6, 1.0])), np.array([1., 0.7, 0.4, 0.])), True)
+    assert_equal(np.allclose(func(np.array([0, 0.5, 1.0])), np.array([1., 0.5, 0. ])), True)
+    assert_equal(np.allclose(func(np.array([0, 0.25, 0.5, 0.75, 1.0])), np.array([1., 0.75, 0.5, 0.25, 0.])), True)
+
+def check_explicability_score(func):
+    # same cost
+    optimal, expected = 3, 3
+    result = np.zeros((1,2))
+    assert_equal(np.all(func(optimal, expected) == result), True)
+
+    optimal, expected = 2,6
+    result = np.array([0, -4])
+    assert_equal(np.allclose(func(optimal, expected), result), True)
+
+    optimal, expected = 4, 3
+    result = np.array([0, 1])
+    assert_equal(np.all(func(optimal, expected) == result), True)
+
+def check_matrix(func):
+    T = np.array([0, 0.3, 0.6, 1.0])
+    w = np.array([1., 0.7, 0.4, 0.])
+    E = np.array([0, 0])
+    P = np.array([[[1., 0., 0., 0.],
+                  [0.7, 0., 0.3, 0.],
+                  [0., 0.4, 0., 0.6],
+                  [0., 0., 0., 1.]],
+
+                 [[0., 1., 0., 0.],
+                  [0., 0., 1., 0.],
+                  [0., 0., 0., 1.],
+                  [0., 0., 0., 1.]]])
+    assert_equal(np.allclose(func(T, w, E), P), True)
+    
+    T = np.array([0, 0.5, 0.7, 1.0])
+    w = np.array([1., 0.5, 0.3, 0.])
+    E = np.array([2, 4])
+    P = np.array([[[-1., 0., 0., 0.],
+                  [-0.5, 1., 0.5, 0.],
+                  [0., -0.3, 0.6, 0.7],
+                  [0., 0., 0., 1.]],
+
+                 [[0., 1., 0., 0.],
+                  [0., 0., 1., 0.],
+                  [0., 0., 0., 1.],
+                  [0., 0., 0., 1.]]])
+    assert_equal(np.allclose(func(T, w, E), P), True)
+
+def check_cost(func):
+    w = np.array([1., 0.7, 0.4, 0.])
+    E = np.array([0, 0])
+    expected_cost = 3
+    C = np.array([[0., 0.],
+                 [0.9, 0.9],
+                 [1.8, 1.8],
+                 [3., 3.]])
+    assert_equal(np.allclose(func(w, E, expected_cost), C), True)
+    
+    w = np.array([1., 0.5, 0.3, 0.])
+    E = np.array([2, 4])
+    expected_cost = 6
+    C = np.array([[0., 0.],
+                 [3., 3.],
+                 [4.2, 4.2],
+                 [6., 6.]])
+    assert_equal(np.allclose(func(w, E, expected_cost), C), True)
+    
+def check_MDP(func):
+    pass
+
+
+def prep_browser():
+    display(Javascript(JS))
+
+num_divs = 0
 
 def viz_plan(plan):
   global num_divs
