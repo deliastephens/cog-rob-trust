@@ -18,6 +18,9 @@ Our three cases would then be as follows:
 2. $$P(s_i, a^\pi, s_{i}) = \omega(i)* \mathcal{P}(E(\pi))$$, which takes the value of $$\omega(i)$$ when the plan is full explainable and 0 when it is not. 
 3. $$P(s_i, a^\pi, s_{i-1}) = \omega(i)* (1-\mathcal{P}(E(\pi)))$$, which takes the value of $$\omega(i)$$ when the plan is _not_ fully explainable (which makes sense, as we'd expect our trust to decrease when the plan isn't fully explainable) and 0 when it _is_ fully explainable.
 
-I'm in the act of rewriting the pset so that it has these cases. I'll update this post and make a new one when it's fixed. I'll try and make sure that nobody has to implement anything new. Again, I'm very sorry for the confusion.
+There's also one additional edge case, corresponding to the situation in which you are executing a _not_ fully explainable plan but are already in the lowest trust level.
+
+
+I'm in the act of rewriting the pset so that it has these cases, and hopefully won't require any new implementation from your part. I'll update this post and make a new one when it's fixed. I'll try and make sure that nobody has to implement anything new. Again, I'm very sorry for the confusion.
 
  
