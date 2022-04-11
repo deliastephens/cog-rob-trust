@@ -1,0 +1,23 @@
+[EDITED 04/11 after conversation with Yuening]
+
+Wow, this is a really good question which I think exposes a flaw in our implementation! After talking with Yuening (and re-reading the reference paper), I see now that the transition matrix actually includes a third function, $$\mathcal{P}(E(\pi))$$. This function's performance can be defined as follows:
+
+$$
+\mathcal{P}(E(\pi))=
+\begin{cases}
+ 0 & E(\pi) < 0\\
+ 1 & E(\pi) = 0\\
+\end{cases}
+$$
+
+This corresponds to $$\mathcal{P}(E(\pi))$$ being 0 when the plan is _not_ fully explainable and 1 when the plan _is_ fully explainable. 
+
+Our three cases would then be as follows:
+
+1. $$P(s_i, a^\pi, s_{i+1}) = (1 - \omega(i))$$
+2. $$P(s_i, a^\pi, s_{i}) = \omega(i)* \mathcal{P}(E(\pi))$$, which takes the value of $$\omega(i)$$ when the plan is full explainable and 0 when it is not. 
+3. $$P(s_i, a^\pi, s_{i-1}) = \omega(i)* (1-\mathcal{P}(E(\pi)))$$, which takes the value of $$\omega(i)$$ when the plan is _not_ fully explainable (which makes sense, as we'd expect our trust to decrease when the plan isn't fully explainable) and 0 when it _is_ fully explainable.
+
+I'm in the act of rewriting the pset so that it has these cases. I'll update this post and make a new one when it's fixed. I'll try and make sure that nobody has to implement anything new. Again, I'm very sorry for the confusion.
+
+ 
