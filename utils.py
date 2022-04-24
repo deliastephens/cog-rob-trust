@@ -165,21 +165,21 @@ def check_omega(func):
 def check_explicability_score(func):
     # same cost
     optimal, expected = 3, 3
-    result = np.zeros((1,2))
+    result = 0
     assert_equal(np.all(func(optimal, expected) == result), True)
 
     optimal, expected = 2,6
-    result = np.array([0, -4])
-    assert_equal(np.allclose(func(optimal, expected), result), True)
+    result = -4
+    assert_equal(np.all(func(optimal, expected) == result), True)
 
     optimal, expected = 4, 3
-    result = np.array([0, 1])
+    result = 1
     assert_equal(np.all(func(optimal, expected) == result), True)
 
 def check_matrix(func):
     T = np.array([0, 0.3, 0.6, 1.0])
     w = np.array([1., 0.7, 0.4, 0.])
-    E = np.array([-1., 0.])
+    E = -1.
     P = np.array([[[1. , 0. , 0. , 0. ],
         [0.7, 0. , 0.3, 0. ],
         [0. , 0.4, 0. , 0.6],
@@ -193,7 +193,7 @@ def check_matrix(func):
     
     T = np.array([0, 0.5, 0.7, 1.0])
     w = np.array([1., 0.5, 0.3, 0.])
-    E = np.array([-4., 0.])
+    E = -4.0
     P = np.array([[[1. , 0. , 0. , 0. ],
         [0.5, 0. , 0.5, 0. ],
         [0. , 0.3, 0. , 0.7],
@@ -207,7 +207,7 @@ def check_matrix(func):
 
 def check_cost(func):
     w = np.array([1., 0.7, 0.4, 0.])
-    E = np.array([0, 0])
+    E = 0
     expected_cost = 3
     C = np.array([[0., 0.],
                  [0.9, 0.9],
